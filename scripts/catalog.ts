@@ -93,8 +93,31 @@ const escape = (text: string) => text.replace(/[&<>"']/g, char => `&#${char.char
 /** Keep the linked list and the embedded fallback identical. */
 export function catalogHtml(entries: CatalogEntry[]): string {
   const list = JSON.stringify({ name: CATALOG_NAME, apps: entries });
-  const rows = entries.map(entry => `<li><strong>${escape(entry.name ?? entry.id)}</strong> <code>${escape(entry.version)}</code>` +
-    (entry.description ? `<br>${escape(entry.description)}` : "") + "</li>").join("\n");
+  const copyControl = () => `<div class="catalog-url"><code>${escape(CATALOG_URL)}</code><button type="button" class="copy-url">URL をコピー</button></div>`;
+  const cards = entries.map(entry => {
+    const name = entry.name ?? entry.id;
+    // Reject active URL schemes before embedding an optional icon.
+    let icon = "";
+    if (entry.icon) {
+      try {
+        const url = new URL(entry.icon);
+        if (["https:", "http:"].includes(url.protocol)) {
+          // CSS hex escapes protect the quoted URL, including control characters.
+          icon = Array.from(url.href, char => {
+            const code = char.charCodeAt(0);
+            return code < 32 || code === 127 || char === '"' || char === "\\" ? `\\${code.toString(16)} ` : char;
+          }).join("");
+        }
+      } catch { /* Invalid icons use the letter fallback. */ }
+    }
+    const fallback = `<span>${escape(Array.from(name)[0]?.toUpperCase() ?? "?")}</span>`;
+    return `<li class="app-card" id="${escape(entry.id)}">
+<div class="app-heading"><span class="app-icon" aria-hidden="true">${fallback}${icon ? `<span class="icon-image" style="background-image: url(&quot;${escape(icon)}&quot;)"></span>` : ""}</span>
+<div class="app-title"><h2><a href="#${escape(encodeURIComponent(entry.id))}">${escape(name)}</a></h2><p class="version">${escape(entry.version)}</p></div></div>
+${entry.description ? `<p class="description">${escape(entry.description)}</p>` : ""}
+<div class="install"><h3>インストール方法</h3><p>Binette の「アプリ」→「リスト」で、次の URL を追加してください。追加したリストから「${escape(name)}」を選んでインストールできます。</p>${copyControl()}</div>
+</li>`;
+  }).join("\n");
   return `<!doctype html>
 <html lang="ja">
 <head>
@@ -103,19 +126,90 @@ export function catalogHtml(entries: CatalogEntry[]): string {
 <title>${escape(CATALOG_NAME)}</title>
 <link rel="binette-apps" href="apps.json">
 <style>
-:root { color-scheme: light dark; font-family: system-ui, sans-serif; }
-body { max-width: 40rem; margin: 0 auto; padding: 2rem 1rem; line-height: 1.6; }
-li { margin: .75rem 0; }
-code { overflow-wrap: anywhere; }
+:root {
+  color-scheme: light;
+  --color-base-100: #ffffff;
+  --color-base-200: #f3f5f8;
+  --color-base-300: #d5dae1;
+  --color-base-content: #16181d;
+  --color-primary: #3273b9;
+  --color-primary-content: #ffffff;
+  --radius-box: 16px;
+  --radius-field: 10px;
+  font-family: system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-base-100: #22252b;
+    --color-base-200: #16181c;
+    --color-base-300: #353a43;
+    --color-base-content: #f1f3f5;
+    --color-primary: #5b9be0;
+    --color-primary-content: #0d1117;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-base-200); color: var(--color-base-content); line-height: 1.65; }
+main { max-width: 68rem; margin: 0 auto; padding: 3.5rem 1.25rem; }
+header { max-width: 44rem; margin-bottom: 2.5rem; }
+h1 { margin: 0 0 .5rem; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.25; letter-spacing: -.03em; }
+header > p { margin: 0 0 1.25rem; }
+a { color: inherit; text-decoration-color: var(--color-base-300); text-underline-offset: .2em; }
+a:hover { text-decoration-color: var(--color-primary); }
+.apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: 1.25rem; padding: 0; margin: 0; list-style: none; }
+.app-card { min-width: 0; padding: 1.5rem; background: var(--color-base-100); border: 1px solid var(--color-base-300); border-radius: var(--radius-box); scroll-margin-top: 1.5rem; }
+.app-card:target { outline: 3px solid var(--color-primary); outline-offset: 4px; }
+.app-heading { display: flex; align-items: center; gap: 1rem; }
+.app-icon { position: relative; display: grid; place-items: center; flex: 0 0 4rem; width: 4rem; height: 4rem; overflow: hidden; border-radius: var(--radius-box); background: var(--color-base-200); color: var(--color-primary); font-size: 1.8rem; font-weight: 700; }
+.icon-image { position: absolute; inset: 0; width: 100%; height: 100%; background-position: center; background-size: contain; background-repeat: no-repeat; pointer-events: none; }
+.app-title { min-width: 0; }
+h2 { margin: 0; font-size: 1.25rem; line-height: 1.4; overflow-wrap: anywhere; }
+.app-title a { text-decoration: none; }
+.version { margin: .25rem 0 0; font-size: .875rem; overflow-wrap: anywhere; }
+.description { margin: 1.25rem 0; overflow-wrap: anywhere; }
+.install { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--color-base-300); }
+h3 { margin: 0; font-size: .875rem; }
+.install p { margin: .5rem 0 1rem; font-size: .875rem; overflow-wrap: anywhere; }
+.catalog-url { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+.catalog-url code { flex: 1 1 14rem; min-width: 0; padding: .625rem .75rem; border: 1px solid var(--color-base-300); border-radius: var(--radius-field); background: var(--color-base-200); font-size: .8rem; overflow-wrap: anywhere; user-select: all; }
+button { min-height: 44px; padding: .625rem .875rem; border: 1px solid var(--color-primary); border-radius: var(--radius-field); background: var(--color-primary); color: var(--color-primary-content); font: inherit; font-size: .875rem; cursor: pointer; }
+button:hover { filter: brightness(1.1); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+.copy-status { min-height: 1.65em; margin: 1rem 0 0; font-size: .875rem; }
+@media (max-width: 480px) { main { padding: 2rem 1rem; } .app-card { padding: 1.125rem; } header { margin-bottom: 1.5rem; } }
 </style>
 </head>
 <body>
-<h1>${escape(CATALOG_NAME)}</h1>
-<p>Binette の提供リストです。Binette の「アプリ」の「リスト」に、このページの URL（<code>${escape(CATALOG_URL)}</code>）を追加すると入れられます。</p>
-<ul>
-${rows}
+<main>
+<header><h1>${escape(CATALOG_NAME)}</h1><p>Binette で使えるアプリを集めました。提供リストの URL を追加して、アプリをインストールできます。</p>${copyControl()}<p class="copy-status" role="status" aria-live="polite"></p></header>
+<ul class="apps">
+${cards}
 </ul>
+</main>
 <script type="application/json" id="binette-apps">${list.replace(/</g, "\\u003c")}</script>
+<script>
+document.querySelectorAll('.copy-url').forEach(function (button) {
+  button.addEventListener('click', async function () {
+    var status = document.querySelector('.copy-status');
+    try {
+      await navigator.clipboard.writeText(button.previousElementSibling.textContent);
+      button.textContent = 'コピーしました';
+      status.textContent = '提供リストの URL をコピーしました。';
+      setTimeout(function () { button.textContent = 'URL をコピー'; }, 2000);
+    } catch {
+      status.textContent = 'コピーできませんでした。URL を選択してコピーしてください。';
+      var selection = window.getSelection();
+      if (selection) {
+        var range = document.createRange();
+        range.selectNodeContents(button.previousElementSibling);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+  });
+});
+</script>
 </body>
 </html>
 `;
