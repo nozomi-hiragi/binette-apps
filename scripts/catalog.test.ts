@@ -109,9 +109,39 @@ Deno.test("a release tag with a mismatched app ID fails", () => fixture(async ro
   await assertRejects(() => catalogEntries(root), Error, "expected exactly one app with id other");
 }));
 
-Deno.test("HTML escapes markup and its embedded JSON remains readable", () => {
-  const entry = { id: "example", version: "1.0.0", source: "https://example.com/", name: "</script><b>&", integrity: {} };
-  const html = catalogHtml([entry]);
-  assert(!html.includes(entry.name));
-  assertEquals(JSON.parse(/<script type="application\/json" id="binette-apps">(.*?)<\/script>/s.exec(html)![1]).apps, [entry]);
+Deno.test("HTML cards expose app metadata, icons and stable app anchors", () => {
+  const entries = [
+    { id: "example", version: "1.2.3", source: "https://example.com/", name: "Example App", icon: "https://example.com/icon.svg", description: "An example application.", integrity: {} },
+    { id: "fallback", version: "2.0.0", source: "https://example.com/fallback/", name: "Fallback App", integrity: {} },
+    { id: "unnamed", version: "3.0.0", source: "https://example.com/unnamed/", integrity: {} },
+  ];
+  const document = catalogHtml(entries);
+  const html = document.split('<script type="application/json"')[0];
+  for (const entry of entries) {
+    assert(html.includes(`id="${entry.id}"`));
+    assert(html.includes(entry.name ?? entry.id));
+    assert(html.includes(entry.version));
+  }
+  assert(html.includes('style="background-image: url(&quot;https://example.com/icon.svg&quot;)"'));
+  assert(/>\s*E\s*</.test(html));
+  assert(html.includes("An example application."));
+  assert(/>\s*F\s*</.test(html));
+  assert(/>\s*U\s*</.test(html));
+  assert(html.includes('<link rel="binette-apps" href="apps.json">'));
+  assertEquals(JSON.parse(/<script type="application\/json" id="binette-apps">(.*?)<\/script>/s.exec(document)![1]), { name: CATALOG_NAME, apps: entries });
+});
+
+Deno.test("HTML escapes hostile card text and attributes while preserving embedded JSON", () => {
+  const hostile = `</script><img src=x onerror="alert('x')">&`;
+  const entry = { id: hostile, version: hostile, source: "https://example.com/", name: hostile, icon: `https://example.com/icon.svg?x=" onerror="alert('x')&y=<tag>`, description: hostile, integrity: {} };
+  const document = catalogHtml([entry]);
+  const html = document.split('<script type="application/json"')[0];
+  const escaped = "&#60;/script&#62;&#60;img src=x onerror=&#34;alert(&#39;x&#39;)&#34;&#62;&#38;";
+  assert(!html.includes(hostile));
+  assert(html.includes(`id="${escaped}"`));
+  assert(html.split(escaped).length >= 5);
+  const escapedIcon = new URL(entry.icon).href.replace(/[&<>"']/g, char => `&#${char.charCodeAt(0)};`);
+  assert(html.includes(`style="background-image: url(&quot;${escapedIcon}&quot;)"`));
+  assert(html.includes('<link rel="binette-apps" href="apps.json">'));
+  assertEquals(JSON.parse(/<script type="application\/json" id="binette-apps">(.*?)<\/script>/s.exec(document)![1]), { name: CATALOG_NAME, apps: [entry] });
 });
