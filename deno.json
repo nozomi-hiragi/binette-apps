@@ -1,0 +1,25 @@
+{
+  "workspace": ["./designer", "./designer/test"],
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "lib": ["esnext", "dom", "dom.iterable", "deno.ns"]
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.11",
+    "@std/path": "jsr:@std/path@^1.1.6",
+    "@std/semver": "jsr:@std/semver@^1.0.5",
+    "assemblyscript/asc": "npm:assemblyscript@0.28.20/asc",
+    "@binette/core": "./.binette/packages/core/src/index.ts",
+    "@binette/decor/as": "./.binette/packages/decor/src/as.ts",
+    "@binette/decor/parts": "./.binette/packages/decor/src/parts.ts",
+    "jsr:@binette/replique": "./.binette/packages/replique/src/index.ts",
+    "jsr:@binette/replique/ui": "./.binette/packages/replique/src/ui.ts"
+  },
+  "tasks": {
+    "setup": "deno run --allow-read --allow-run=git scripts/setup.ts",
+    "check": "deno check designer/src/main.ts designer/test/*.ts scripts/*.ts && deno lint",
+    "test": "deno test -A designer/test/ scripts/",
+    "catalog": "deno run -A scripts/catalog.ts"
+  },
+  "exclude": [".binette/", "node_modules/", "pages/"]
+}

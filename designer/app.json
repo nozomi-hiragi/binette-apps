@@ -1,0 +1,10 @@
+{
+  "id": "designer",
+  "version": "0.1.0",
+  "binette": "0.2",
+  "name": "デザイナー",
+  "icon": "icon.svg",
+  "entry": {
+    "as": "src/main.ts"
+  }
+}

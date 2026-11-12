@@ -1,0 +1,172 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@std/assert@^1.0.11": "1.0.19",
+    "jsr:@std/internal@^1.0.12": "1.0.14",
+    "jsr:@std/internal@^1.0.14": "1.0.14",
+    "jsr:@std/path@^1.1.6": "1.1.6",
+    "jsr:@std/semver@1.0.8": "1.0.8",
+    "jsr:@std/semver@^1.0.5": "1.0.8",
+    "npm:assemblyscript@0.28.20": "0.28.20",
+    "npm:valibot@1.5.0": "1.5.0"
+  },
+  "jsr": {
+    "@std/assert@1.0.19": {
+      "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.12"
+      ]
+    },
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
+    },
+    "@std/path@1.1.6": {
+      "integrity": "c68485c2a4dfbb5ae3cc74fae4e8c4e5d874cf8a8ed12927917235c758b46cbe",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.14"
+      ]
+    },
+    "@std/semver@1.0.8": {
+      "integrity": "dc830e8b8b6a380c895d53fbfd1258dc253704ca57bbe1629ac65fd7830179b7"
+    }
+  },
+  "npm": {
+    "assemblyscript@0.28.20": {
+      "integrity": "sha512-5PM7GZpvcLypHcLmi30aP8mqm5HjU+LL3BdV1xDyA3USGtL2w+iMiUnhtH+vW8+2kOuHlAyPu7M+QgyEw5he1g==",
+      "dependencies": [
+        "binaryen",
+        "long"
+      ],
+      "bin": true
+    },
+    "binaryen@131.0.0-nightly.20260721": {
+      "integrity": "sha512-AAQIkhfbYXh4FBObwBrlO+5L+6Rp6OOMOjh6AdT0M+GLNLyrwKWgtW+EzmizNgx9CWDfTJPfDtKoZi62QESbtg==",
+      "bin": true
+    },
+    "long@5.3.2": {
+      "integrity": "sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA=="
+    },
+    "valibot@1.5.0": {
+      "integrity": "sha512-nil6AkP2TChWL43Z5uJ6GTxX01CUA+g8LWUM+N/rB9NBbkUMaUsi9PUNzlUPgoKASgmx9f7eGOYpJ04/fSa6FQ=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@^1.0.11",
+      "jsr:@std/path@^1.1.6",
+      "jsr:@std/semver@^1.0.5",
+      "npm:assemblyscript@0.28.20"
+    ],
+    "members": {
+      "designer": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      }
+    },
+    "links": {
+      "jsr:@binette/core@0.2.0": {
+        "dependencies": [
+          "npm:valibot@1.5.0"
+        ]
+      },
+      "jsr:@binette/coulisses@0.2.0": {
+        "dependencies": [
+          "jsr:@binette/core@0.2.0",
+          "jsr:@std/path@^1.1.6"
+        ]
+      },
+      "jsr:@binette/decor@0.2.0": {
+        "dependencies": [
+          "jsr:@binette/core@0.2.0"
+        ]
+      },
+      "jsr:@binette/regie@0.2.0": {
+        "dependencies": [
+          "jsr:@binette/core@0.2.0",
+          "jsr:@binette/decor@0.2.0",
+          "jsr:@std/path@^1.1.6",
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-app@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-apps@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-cadre@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-dom@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-fs@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-manager@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-os@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-pigeon@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-schedule@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-scheduler@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-shares@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-storage@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-ui@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique@0.2.0": {
+        "dependencies": [
+          "jsr:@binette/decor@0.2.0",
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/scene@0.2.0": {
+        "dependencies": [
+          "jsr:@binette/core@0.2.0",
+          "jsr:@binette/decor@0.2.0",
+          "jsr:@binette/regie@0.2.0"
+        ]
+      }
+    }
+  }
+}
