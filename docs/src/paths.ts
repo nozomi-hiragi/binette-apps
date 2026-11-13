@@ -110,7 +110,7 @@ export function pageTitle(body: string): string {
       const marker = line.substring(0, 3);
       if (fence == "") fence = marker;
       else if (fence == marker) fence = "";
-    } else if (fence == "" && line.startsWith("# ")) return line.substring(2).trim();
+    } else if (fence == "" && line.startsWith("# ")) return line.substring(2).split("`").join("").trim();
   }
   return "ドキュメント";
 }

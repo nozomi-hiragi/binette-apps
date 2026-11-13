@@ -27,6 +27,7 @@ const cases: [string, string, string][] = [
   ["Other refs remain external", 'describe("https://raw.githubusercontent.com/nozomi-hiragi/binette/v0.2.1/docs/index.md")', "external|https://raw.githubusercontent.com/nozomi-hiragi/binette/v0.2.1/docs/index.md||"],
   ["Unsafe and non-HTTPS schemes are ignored", '[describe("javascript:alert(1)"), describe("http://example.com/"), describe("mailto:a@example.com")].join(";")', "ignore|||;ignore|||;ignore|||"],
   ["Page titles ignore fenced code", 'pageTitle("```md\\n# Example\\n```\\n# Actual title\\n## Next")', "Actual title"],
+  ["Page titles drop code span marks", 'pageTitle("# ホーム（`cadre.home`）")', "ホーム（cadre.home）"],
   ["Untitled pages use the app name", 'pageTitle("## Section")', "ドキュメント"],
 ];
 
