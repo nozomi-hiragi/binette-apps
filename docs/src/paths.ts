@@ -36,8 +36,9 @@ export function resolveUrl(link: string, page: string): string {
   let url = value;
   const colon = value.indexOf(":");
   const firstSlash = value.indexOf("/");
+  const delimiter = firstSlash < 0 ? suffixStart(value) : min<i32>(firstSlash, suffixStart(value));
   if (value.startsWith("//")) url = page.substring(0, page.indexOf(":") + 1) + value;
-  else if (colon < 0 || (firstSlash >= 0 && colon > firstSlash)) {
+  else if (colon < 0 || colon > delimiter) {
     const authorityEnd = base.indexOf("/", base.indexOf("://") + 3);
     const origin = authorityEnd < 0 ? base : base.substring(0, authorityEnd);
     url = value.startsWith("/") ? origin + value : base.substring(0, base.lastIndexOf("/") + 1) + value;
@@ -48,6 +49,32 @@ export function resolveUrl(link: string, page: string): string {
   const pathStart = url.indexOf("/", schemeEnd + 3);
   if (pathStart < 0 || pathStart >= end) return url.substring(0, end) + "/" + url.substring(end);
   return url.substring(0, pathStart) + normalizePath(url.substring(pathStart, end)) + url.substring(end);
+}
+
+/** Decode URL fragments into heading IDs without trapping on malformed UTF-8. */
+export function decodeAnchor(value: string): string {
+  let result = "";
+  const hex = "0123456789abcdef";
+  for (let i = 0; i < value.length;) {
+    if (value.charAt(i) != "%") { result += value.charAt(i++); continue; }
+    const bytes: u8[] = [];
+    while (i < value.length && value.charAt(i) == "%") {
+      if (i + 2 >= value.length) return value;
+      const high = hex.indexOf(value.charAt(i + 1).toLowerCase());
+      const low = hex.indexOf(value.charAt(i + 2).toLowerCase());
+      if (high < 0 || low < 0) return value;
+      bytes.push(<u8>((high << 4) | low));
+      i += 3;
+    }
+    const buffer = new Uint8Array(bytes.length);
+    for (let j = 0; j < bytes.length; j++) buffer[j] = bytes[j];
+    const decoded = String.UTF8.decode(buffer.buffer);
+    const encoded = Uint8Array.wrap(String.UTF8.encode(decoded, false, 1 /* REPLACE */));
+    if (encoded.length != bytes.length) return value;
+    for (let j = 0; j < bytes.length; j++) if (encoded[j] != bytes[j]) return value;
+    result += decoded;
+  }
+  return result;
 }
 
 export class Link {
@@ -61,7 +88,7 @@ export function classifyLink(link: string, page: string, ref: string): Link {
   const end = suffixStart(url);
   const clean = url.substring(0, end);
   const hash = url.indexOf("#");
-  const anchor = hash < 0 ? "" : url.substring(hash + 1);
+  const anchor = hash < 0 ? "" : decodeAnchor(url.substring(hash + 1));
   const base = documentBase(ref);
   if (clean.startsWith(base)) {
     let path = clean.substring(base.length);

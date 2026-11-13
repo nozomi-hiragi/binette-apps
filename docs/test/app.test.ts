@@ -105,10 +105,10 @@ Deno.test("Docs loads index, navigates with anchors and restores back history", 
   app.click("目次");
   assertEquals(app.requests.at(-1), base + "spec/README.md");
   app.respond("# Contents");
-  app.link(base + "spec/net.md#api");
+  app.link(base + "spec/net.md#%E6%97%A5%E6%9C%AC%E8%AA%9E");
   app.respond("# Net\n## API");
   assertEquals(app.find("markdown").base, base + "spec/net.md");
-  assertEquals(app.find("markdown").anchor, "api");
+  assertEquals(app.find("markdown").anchor, "日本語");
   app.click("戻る");
   assertEquals(app.find("markdown").text, "# Contents");
   app.click("戻る");

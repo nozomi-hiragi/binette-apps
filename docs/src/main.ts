@@ -19,7 +19,7 @@ class Docs extends App {
     this.ref = documentRef(this.osRef());
     this.net = NetApi.from(api);
     this.storage = StorageApi.from(api);
-    const saved = this.storage === null ? null : this.storage!.read("last:" + this.ref);
+    const saved: string | null = this.storage === null ? null : this.storage!.read("last:" + this.ref);
     this.open(saved === null ? "index.md" : saved, false);
   }
 
@@ -31,13 +31,13 @@ class Docs extends App {
     if (target.kind == "external") { this.openUrl(target.url); return; }
     if (target.kind != "page") return;
     if (remember && this.path != "" && (target.path != this.path || target.anchor != this.anchor)) {
-      this.history.push(this.pageUrl() + (this.anchor == "" ? "" : "#" + this.anchor));
+      this.history.push(this.pageUrl() + (this.anchor == "" ? "" : "#" + encodeURIComponent(this.anchor)));
     }
     this.path = target.path;
     this.anchor = target.anchor;
     this.body = this.storage === null ? null : this.storage!.read(this.cacheKey());
     this.error = "";
-    if (this.storage !== null) this.storage!.write("last:" + this.ref, this.pageUrl() + (this.anchor == "" ? "" : "#" + this.anchor));
+    if (this.storage !== null) this.storage!.write("last:" + this.ref, this.pageUrl() + (this.anchor == "" ? "" : "#" + encodeURIComponent(this.anchor)));
     this.refresh();
   }
 
