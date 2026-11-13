@@ -7,8 +7,7 @@
     "jsr:@std/path@^1.1.6": "1.1.6",
     "jsr:@std/semver@1.0.8": "1.0.8",
     "jsr:@std/semver@^1.0.5": "1.0.8",
-    "npm:assemblyscript@0.28.20": "0.28.20",
-    "npm:valibot@1.5.0": "1.5.0"
+    "npm:assemblyscript@0.28.20": "0.28.20"
   },
   "jsr": {
     "@std/assert@1.0.19": {
@@ -45,9 +44,6 @@
     },
     "long@5.3.2": {
       "integrity": "sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA=="
-    },
-    "valibot@1.5.0": {
-      "integrity": "sha512-nil6AkP2TChWL43Z5uJ6GTxX01CUA+g8LWUM+N/rB9NBbkUMaUsi9PUNzlUPgoKASgmx9f7eGOYpJ04/fSa6FQ=="
     }
   },
   "workspace": {
@@ -59,6 +55,11 @@
     ],
     "members": {
       "designer": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "docs": {
         "dependencies": [
           "npm:assemblyscript@0.28.20"
         ]
@@ -115,6 +116,11 @@
         ]
       },
       "jsr:@binette/replique-manager@0.1.0": {
+        "dependencies": [
+          "npm:assemblyscript@0.28.20"
+        ]
+      },
+      "jsr:@binette/replique-net@0.1.0": {
         "dependencies": [
           "npm:assemblyscript@0.28.20"
         ]
