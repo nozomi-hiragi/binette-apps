@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "lib": [],
+    "types": ["npm:assemblyscript@0.28.20/std/assembly/index.d.ts"]
+  }
+}

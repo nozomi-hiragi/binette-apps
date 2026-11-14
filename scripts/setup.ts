@@ -15,7 +15,13 @@ export async function setup(): Promise<void> {
   let exists = false;
   try { exists = (await Deno.stat(directory)).isDirectory; }
   catch (error) { if (!(error instanceof Deno.errors.NotFound)) throw error; }
-  if (!exists) await git(["clone", "--depth", "1", "--branch", tag, repository, ".binette"]);
+  if (!exists) {
+    // Fetch the tag ref explicitly: `clone --branch` prefers a branch with the same name as the tag.
+    await git(["init", "--quiet", ".binette"]);
+    await git(["-C", ".binette", "remote", "add", "origin", repository]);
+    await git(["-C", ".binette", "fetch", "--quiet", "--depth", "1", "origin", `refs/tags/${tag}:refs/tags/${tag}`]);
+    await git(["-C", ".binette", "checkout", "--quiet", "--detach", `refs/tags/${tag}`]);
+  }
   const [head, target, origin, changes] = await Promise.all([
     git(["-C", ".binette", "rev-parse", "HEAD"]),
     git(["-C", ".binette", "rev-parse", `refs/tags/${tag}^{commit}`]),
