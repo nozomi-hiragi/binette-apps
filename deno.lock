@@ -70,27 +70,27 @@
       }
     },
     "links": {
-      "jsr:@binette/core@0.2.0": {
+      "jsr:@binette/core@0.2.1": {
         "dependencies": [
           "npm:valibot@1.5.0"
         ]
       },
-      "jsr:@binette/coulisses@0.2.0": {
+      "jsr:@binette/coulisses@0.2.1": {
         "dependencies": [
-          "jsr:@binette/core@0.2.0",
+          "jsr:@binette/core@0.2.1",
           "jsr:@std/path@^1.1.6"
         ]
       },
-      "jsr:@binette/decor@0.2.0": {
+      "jsr:@binette/decor@0.2.1": {
         "dependencies": [
-          "jsr:@binette/core@0.2.0",
+          "jsr:@binette/core@0.2.1",
           "npm:marked@18.1.2"
         ]
       },
-      "jsr:@binette/regie@0.2.0": {
+      "jsr:@binette/regie@0.2.1": {
         "dependencies": [
-          "jsr:@binette/core@0.2.0",
-          "jsr:@binette/decor@0.2.0",
+          "jsr:@binette/core@0.2.1",
+          "jsr:@binette/decor@0.2.1",
           "jsr:@std/path@^1.1.6",
           "npm:assemblyscript@0.28.20"
         ]
@@ -165,17 +165,17 @@
           "npm:assemblyscript@0.28.20"
         ]
       },
-      "jsr:@binette/replique@0.2.0": {
+      "jsr:@binette/replique@0.2.1": {
         "dependencies": [
-          "jsr:@binette/decor@0.2.0",
+          "jsr:@binette/decor@0.2.1",
           "npm:assemblyscript@0.28.20"
         ]
       },
-      "jsr:@binette/scene@0.2.0": {
+      "jsr:@binette/scene@0.2.1": {
         "dependencies": [
-          "jsr:@binette/core@0.2.0",
-          "jsr:@binette/decor@0.2.0",
-          "jsr:@binette/regie@0.2.0"
+          "jsr:@binette/core@0.2.1",
+          "jsr:@binette/decor@0.2.1",
+          "jsr:@binette/regie@0.2.1"
         ]
       }
     }

@@ -19,20 +19,9 @@ deno task catalog /tmp/binette-apps-site
 
 `check` は型検査と lint、`test` はデザイナーとドキュメントの AssemblyScript/Wasm テストと、一時 Git リポジトリを使った提供リストのテストを実行します。`catalog` は指定先に `index.html` と `apps.json` を生成します。アプリ本体はコピーせず、タグのコミットに固定した GitHub の raw URL を参照します。
 
-対象の Binette は [`binette.json`](binette.json) のタグで一元管理します。`setup` はそのタグを `--depth 1 --branch <tag>` で `.binette/` に取得します。既存の取得先が違うタグや変更済みの内容なら失敗するため、必要な変更を保管して `.binette/` を取り除いてから再実行してください。
+対象の Binette は [`binette.json`](binette.json) のタグで一元管理します。`setup` はそのタグ（`refs/tags/<tag>`）だけを深さ 1 で `.binette/` に取得します。同じ名前のブランチがあってもタグを取ります。既存の取得先が違うタグや変更済みの内容なら失敗するため、必要な変更を保管して `.binette/` を取り除いてから再実行してください。
 
 型検査の `jsr:@binette/replique` と `/ui` は `.binette/packages/replique` に解決します。Réplique の機能パッケージも取得先の Deno ワークスペースを使います。JSR の別版と混ざらないよう、ビルドと提供リストのメタデータ生成も同じタグの `packages/regie/src/build.ts`、`cli.ts`、`packages/replique` を使います。AssemblyScript は Binette と同じ版を使います。
-
-ドキュメントアプリは開発中の `feat/markdown-view` の API（`markdown`・`App.openUrl`）を使います。このアプリを検証するときは、`setup` のあとに `.binette/` で次を実行してください。`binette.json` の指定は `v0.2.0` のままです。
-
-```sh
-git -C .binette fetch origin feat/markdown-view
-git -C .binette checkout --detach FETCH_HEAD
-deno task check
-deno task test
-```
-
-`setup` を再実行する前には、変更のない `.binette/` を `git -C .binette checkout --detach v0.2.0` で指定タグへ戻します。
 
 ## アプリの追加
 
