@@ -4,7 +4,7 @@
 
 提供リスト: https://nozomi-hiragi.github.io/binette-apps/
 
-この URL は今後も固定です。Binette の「アプリ」→「リスト」に追加すると、公開済みのアプリをインストールできます。現在は Décor の部品を編集する「デザイナー」を収録しています。Binette 本体のドキュメントアプリは本体側で管理します。移行前のデザイナーのデータは引き継ぎません。
+この URL は今後も固定です。Binette の「アプリ」→「リスト」に追加すると、公開済みのアプリをインストールできます。Décor の部品を編集する「デザイナー」と、OS と同じ版の文書を GitHub から読む「ドキュメント」を収録しています。移行前のデザイナーのデータは引き継ぎません。
 
 ## 開発
 
@@ -17,9 +17,9 @@ deno task test
 deno task catalog /tmp/binette-apps-site
 ```
 
-`check` は型検査と lint、`test` はデザイナーの AssemblyScript/Wasm テストと、一時 Git リポジトリを使った提供リストのテストを実行します。`catalog` は指定先に `index.html` と `apps.json` を生成します。アプリ本体はコピーせず、タグのコミットに固定した GitHub の raw URL を参照します。
+`check` は型検査と lint、`test` はデザイナーとドキュメントの AssemblyScript/Wasm テストと、一時 Git リポジトリを使った提供リストのテストを実行します。`catalog` は指定先に `index.html` と `apps.json` を生成します。アプリ本体はコピーせず、タグのコミットに固定した GitHub の raw URL を参照します。
 
-対象の Binette は [`binette.json`](binette.json) のタグで一元管理します。`setup` はそのタグを `--depth 1 --branch <tag>` で `.binette/` に取得します。既存の取得先が違うタグや変更済みの内容なら失敗するため、必要な変更を保管して `.binette/` を取り除いてから再実行してください。
+対象の Binette は [`binette.json`](binette.json) のタグで一元管理します。`setup` はそのタグ（`refs/tags/<tag>`）だけを深さ 1 で `.binette/` に取得します。同じ名前のブランチがあってもタグを取ります。既存の取得先が違うタグや変更済みの内容なら失敗するため、必要な変更を保管して `.binette/` を取り除いてから再実行してください。
 
 型検査の `jsr:@binette/replique` と `/ui` は `.binette/packages/replique` に解決します。Réplique の機能パッケージも取得先の Deno ワークスペースを使います。JSR の別版と混ざらないよう、ビルドと提供リストのメタデータ生成も同じタグの `packages/regie/src/build.ts`、`cli.ts`、`packages/replique` を使います。AssemblyScript は Binette と同じ版を使います。
 

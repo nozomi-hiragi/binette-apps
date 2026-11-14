@@ -1,0 +1,14 @@
+{
+  "id": "docs",
+  "version": "0.2.0",
+  "binette": "0.2",
+  "name": "ドキュメント",
+  "icon": "icon.svg",
+  "entry": { "css": "src/style.css", "as": "src/main.ts" },
+  "permissions": {
+    "net": {
+      "reason": "Binette の文書を GitHub から読むため",
+      "request": ["https://raw.githubusercontent.com/nozomi-hiragi/binette/"]
+    }
+  }
+}
